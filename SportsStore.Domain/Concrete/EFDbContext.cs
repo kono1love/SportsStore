@@ -9,3 +9,4 @@ namespace SportsStore.Domain.Concrete
         public DbSet<Product> Products { get; set; }
     }
 }
+    
