@@ -10,10 +10,17 @@
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <link href="~/Content/bootstrap-theme.css" rel="stylesheet" />
     <link href="~/Content/ErrorStyles.css" rel="stylesheet" />
+    <script scr="~/scripts/jquery-1.10.2.js"></script>
+    <script scr="~/scripts/jquery.validate.js"></script>
+    <script scr="~/scripts/jquery.validate.unobtrusive.js"></script>
     <title></title>
 </head>
 <body>
     <div>
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success">@TempData["message"]</div>
+        }
         @RenderBody()
     </div>
 </body>

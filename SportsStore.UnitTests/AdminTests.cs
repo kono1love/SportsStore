@@ -77,5 +77,57 @@ namespace SportsStore.UnitTests
 
             Assert.IsNull(result);
         }
+        [TestMethod]
+        public void Can_Save_Valid_Changes()
+        {
+            //Arrange
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            //Arrange create controller
+            AdminController target = new AdminController(mock.Object);
+            //Arrange create prod
+            Product product = new Product { Name = "Test" };
+
+            //Act
+            ActionResult result = target.Edit(product);
+            //Assert - checked that the repo was called
+            mock.Verify(m => m.SaveProduct(product));
+            //Assert = checked method result type
+            Assert.IsNotInstanceOfType(result, typeof(ViewResult));
+        }
+        [TestMethod]
+        public void Cannot_Save_Invalid_Changes() {
+            //Arrange
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            //Arrange create controller
+            AdminController target = new AdminController(mock.Object);
+            //Arrange create prod
+            Product product = new Product { Name = "Test" };
+            //Arrange add an error to the model state 
+            target.ModelState.AddModelError("error", "error");
+            //Act try to save
+            ActionResult result = target.Edit(product);
+          //Assert - checked that the repo was called
+            mock.Verify(m => m.SaveProduct(It.IsAny<Product>()),Times.Never());
+            //Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+        public void Can_Delete_Valid_Products()
+        {
+            //Arrange -create a prod
+            Product prod = new Product { ProductID = 2, Name = "Test" };
+            //Arrange = mock
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns(new Product[]
+            {
+                new Product {ProductID = 1, Name = "P1" },
+                 new Product {ProductID = 3, Name = "P3" }
+            });
+            //Arrange controller
+            AdminController target = new AdminController(mock.Object);
+            //ACt
+            target.Delete(prod.ProductID);
+            //Assert
+            mock.Verify(m => m.DeleteProduct(prod.ProductID));
+        }
     }
 }
